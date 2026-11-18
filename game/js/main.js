@@ -326,8 +326,8 @@ function updatePlayer(dt) {
     driveCar(game, p.car, { throttle, steer, handbrake: input.down('Space') }, dt);
     p.x = p.car.x; p.y = p.car.y; p.angle = p.car.angle;
     p.speed = p.car.speed;
-    if (p.car.wrecked) exitCar();
-    updateEngine(true, clamp(p.car.speed / 660, 0, 1));
+    if (p.car.wrecked) { exitCar(); updateEngine(false, 0); }
+    else updateEngine(true, clamp(p.car.speed / 660, 0, 1));
   } else {
     let mx = (input.down('KeyD') ? 1 : 0) - (input.down('KeyA') ? 1 : 0);
     let my = (input.down('KeyS') ? 1 : 0) - (input.down('KeyW') ? 1 : 0);
