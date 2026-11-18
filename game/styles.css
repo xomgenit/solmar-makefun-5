@@ -1,0 +1,121 @@
+/* SOLMAR — Streets of the Sun. Sun-soaked HUD, menus and overlays. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #101418; }
+body { font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif; color: #fff; }
+#game-canvas { position: fixed; inset: 0; display: block; cursor: crosshair; }
+
+/* ---- HUD ---- */
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+#vitals { position: absolute; top: 16px; left: 16px; }
+#health-bar {
+  position: relative; width: 220px; height: 20px;
+  background: rgba(0,0,0,0.55); border: 2px solid rgba(255,255,255,0.75);
+  border-radius: 3px; overflow: hidden;
+}
+#health-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #37d67a, #7dd87d); transition: width 0.15s; }
+#health-text {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 13px; text-shadow: 1px 1px 2px #000;
+}
+#cash {
+  margin-top: 6px; font-size: 30px; font-weight: 900; letter-spacing: 1px;
+  color: #7dd87d; text-shadow: 2px 2px 3px rgba(0,0,0,0.8);
+}
+#stars {
+  position: absolute; top: 14px; right: 20px; font-size: 34px; letter-spacing: 4px;
+  color: rgba(255,255,255,0.45); text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+#stars.hot { color: #ffd23f; }
+#zone {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  font-size: 26px; font-weight: 900; letter-spacing: 6px; opacity: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.85); transition: opacity 0.4s;
+}
+#zone.show { opacity: 1; }
+#minimap-wrap {
+  position: absolute; left: 16px; bottom: 16px; width: 176px; height: 176px;
+  border-radius: 50%; overflow: hidden; border: 3px solid rgba(255,255,255,0.8);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.5), 0 4px 14px rgba(0,0,0,0.5);
+}
+#minimap { width: 176px; height: 176px; display: block; }
+#objective-panel {
+  position: absolute; right: 16px; bottom: 96px; width: 300px;
+  background: rgba(0,0,0,0.55); border-left: 4px solid #ffd23f;
+  padding: 10px 12px; border-radius: 3px;
+}
+#objective-title { font-size: 15px; font-weight: 900; letter-spacing: 2px; color: #ffd23f; }
+#objective-text { font-size: 16px; margin-top: 3px; line-height: 1.3; }
+#speedometer {
+  position: absolute; right: 20px; bottom: 16px; text-align: right;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+}
+#speed { font-size: 46px; font-weight: 900; }
+#speedometer .unit { font-size: 16px; font-weight: 700; margin-left: 4px; color: #ffd23f; }
+#car-health { font-size: 14px; font-weight: 700; color: #fff; }
+#hint {
+  position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+  background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.35);
+  padding: 8px 16px; border-radius: 4px; font-size: 18px; font-weight: 700;
+  min-width: 40px; text-align: center;
+}
+#hint:empty { display: none; }
+#banner {
+  position: absolute; top: 26%; left: 0; right: 0; text-align: center;
+  opacity: 0; transform: scale(0.94); transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+#banner.show { opacity: 1; transform: scale(1); }
+#banner-title {
+  font-size: 54px; font-weight: 900; letter-spacing: 8px;
+  text-shadow: 3px 3px 0 #000, 0 0 24px rgba(0,0,0,0.7);
+}
+#banner-sub { font-size: 20px; margin-top: 4px; text-shadow: 2px 2px 4px #000; }
+
+/* ---- Overlays / menus ---- */
+.overlay {
+  position: fixed; inset: 0; z-index: 10; display: none;
+  align-items: center; justify-content: center;
+  background: rgba(8, 10, 16, 0.55); backdrop-filter: blur(2px);
+}
+.overlay.show { display: flex; }
+.panel {
+  background: linear-gradient(160deg, rgba(20,24,32,0.94), rgba(40,26,12,0.94));
+  border: 1px solid rgba(255,210,63,0.4); border-radius: 10px;
+  padding: 36px 44px; max-width: 620px; width: calc(100% - 40px);
+  text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.title-panel { max-width: 680px; }
+.logo-sub { font-size: 13px; letter-spacing: 5px; color: #ffd23f; font-weight: 700; }
+h1 {
+  font-size: 92px; font-weight: 900; letter-spacing: 10px; line-height: 0.95;
+  background: linear-gradient(180deg, #ffe66d 20%, #ff8c42 70%, #e94f37);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none; margin: 6px 0 2px;
+}
+.logo-tag { font-size: 22px; letter-spacing: 12px; font-weight: 900; color: #fff; }
+.tagline { margin: 18px auto 4px; font-size: 17px; line-height: 1.5; color: #ddd; max-width: 540px; }
+h2 { font-size: 40px; font-weight: 900; letter-spacing: 6px; margin-bottom: 10px; }
+h2.wasted { color: #ff5b5b; font-size: 64px; }
+h2.busted { color: #4d8dff; font-size: 64px; }
+#pause-stats { font-size: 17px; line-height: 1.8; color: #ddd; margin: 8px 0 18px; }
+#pause-stats b { color: #ffd23f; }
+.menu-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; align-items: center; }
+button.big {
+  font-family: inherit; font-size: 19px; font-weight: 900; letter-spacing: 3px;
+  color: #111; background: linear-gradient(180deg, #ffe66d, #ffb347);
+  border: none; border-radius: 5px; padding: 13px 34px; cursor: pointer;
+  width: 320px; max-width: 100%; transition: transform 0.08s, filter 0.08s;
+}
+button.big:hover { filter: brightness(1.08); transform: translateY(-1px); }
+button.big:active { transform: translateY(1px); }
+button.big.secondary { background: linear-gradient(180deg, #e8e8e8, #b8b8b8); }
+button.big.ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6); }
+button.big:disabled { opacity: 0.4; cursor: default; transform: none; }
+#howto {
+  display: none; margin-top: 18px; font-size: 15px; line-height: 1.9; color: #ddd;
+  background: rgba(0,0,0,0.35); border-radius: 6px; padding: 12px;
+}
+#howto.open { display: block; }
+#howto b { color: #ffd23f; }
+.foot { margin-top: 20px; font-size: 12px; color: #999; letter-spacing: 1px; }
+.end-panel p { font-size: 17px; line-height: 1.5; color: #ddd; margin: 6px 0; }

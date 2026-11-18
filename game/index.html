@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOLMAR — Streets of the Sun</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="game-canvas"></canvas>
+
+<!-- In-game HUD -->
+<div id="hud" style="display:none">
+  <div id="vitals">
+    <div id="health-bar"><div id="health-fill"></div><span id="health-text">100</span></div>
+    <div id="cash">$200</div>
+  </div>
+  <div id="stars">☆☆☆☆☆</div>
+  <div id="zone"></div>
+  <div id="minimap-wrap"><canvas id="minimap" width="176" height="176"></canvas></div>
+  <div id="objective-panel">
+    <div id="objective-title">FREE ROAM</div>
+    <div id="objective-text"></div>
+  </div>
+  <div id="speedometer" style="display:none">
+    <span id="speed">0</span><span class="unit">km/h</span>
+    <div id="car-health">CAR 100%</div>
+  </div>
+  <div id="hint"></div>
+  <div id="banner">
+    <div id="banner-title"></div>
+    <div id="banner-sub"></div>
+  </div>
+</div>
+
+<!-- Title screen -->
+<div id="title-screen" class="overlay show">
+  <div class="panel title-panel">
+    <div class="logo-sub">SOLMAR BAY &nbsp;·&nbsp; A SUN-SOAKED CRIME STORY</div>
+    <h1>SOLMAR</h1>
+    <div class="logo-tag">STREETS OF THE SUN</div>
+    <p class="tagline">Danny “Dice” Marlow is back in town. Vera Santos has work.
+      The Harbor Kings own the docks. The SBPD owns the streets. Steal a car,
+      take the job, lose the heat — and make Solmar Bay yours.</p>
+    <div class="menu-buttons">
+      <button id="btn-new" class="big">NEW GAME</button>
+      <button id="btn-continue" class="big secondary">CONTINUE</button>
+      <button id="btn-howto" class="big ghost">HOW TO PLAY</button>
+    </div>
+    <div id="howto">
+      <b>WASD</b> move / drive &nbsp;·&nbsp; <b>Shift</b> sprint &nbsp;·&nbsp;
+      <b>Space</b> handbrake &nbsp;·&nbsp; <b>E</b> steal / exit / respray / heal<br>
+      <b>Mouse</b> aim &nbsp;·&nbsp; <b>Click / hold</b> shoot &nbsp;·&nbsp;
+      <b>Esc / P</b> pause &nbsp;·&nbsp; <b>Sunset Auto Spa</b> clears your wanted level ($150)
+    </div>
+    <div class="foot">An original game. No network, no downloads — everything runs from these files.</div>
+  </div>
+</div>
+
+<!-- Pause menu -->
+<div id="pause-menu" class="overlay">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <div id="pause-stats"></div>
+    <div class="menu-buttons">
+      <button id="btn-resume" class="big">RESUME</button>
+      <button id="btn-save" class="big secondary">SAVE GAME</button>
+      <button id="btn-restart-mission" class="big secondary">RESTART MISSION</button>
+      <button id="btn-quit" class="big ghost">QUIT TO TITLE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Wasted -->
+<div id="wasted-screen" class="overlay">
+  <div class="panel end-panel">
+    <h2 class="wasted">WASTED</h2>
+    <p>Danny wakes up at Solmar General. The doctors charge $100, and the
+      heat is off — for now.</p>
+    <div class="menu-buttons">
+      <button id="btn-respawn" class="big">LEAVE HOSPITAL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Busted -->
+<div id="busted-screen" class="overlay">
+  <div class="panel end-panel">
+    <h2 class="busted">BUSTED</h2>
+    <p>The SBPD takes Danny in. Bail is $150, and the wanted level is wiped
+      clean.</p>
+    <div class="menu-buttons">
+      <button id="btn-respawn-busted" class="big">POST BAIL</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
