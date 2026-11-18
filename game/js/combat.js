@@ -35,7 +35,11 @@ export function shoot(game, x, y, angle, opts) {
     const px = x + dx * t, py = y + dy * t;
     if (dist(px, py, tx, ty) < radius + 6) { bestT = t; best = ref; bestKind = kind; }
   };
-  for (const e of game.enemies) if (!e.dead) consider(e.x, e.y, 15, 'enemy', e);
+  // Only the player's shots can hit enemies: enemy bullets already damage the
+  // player through a separate hit roll, and letting them hit other enemies
+  // meant cops could kill cops in a crossfire — each 'officer down' raised
+  // the PLAYER's wanted level, so heat escalated instead of cooling.
+  if (fromPlayer) for (const e of game.enemies) if (!e.dead) consider(e.x, e.y, 15, 'enemy', e);
   for (const ped of game.peds) if (ped.state !== 'down') consider(ped.x, ped.y, 12, 'ped', ped);
   for (const car of game.cars) {
     if (fromPlayer && game.player.inCar && car === game.player.car) continue;
@@ -91,6 +95,17 @@ function rayRect(x, y, dx, dy, r) {
     if (tmin > tmax) return null;
   }
   return tmin;
+}
+
+export function hasLineOfSight(game, x1, y1, x2, y2) {
+  const d = dist(x1, y1, x2, y2);
+  if (d < 1) return true;
+  const dx = (x2 - x1) / d, dy = (y2 - y1) / d;
+  for (const b of game.city.buildings) {
+    const t = rayRect(x1, y1, dx, dy, b);
+    if (t !== null && t < d) return false;
+  }
+  return true;
 }
 
 export function killEnemy(game, e) {
@@ -152,7 +167,7 @@ export function updateEnemies(game, dt) {
         e.arrestTimer = 0;
       }
       e.shootTimer -= dt;
-      if (d < 330 && d > 40 && e.shootTimer <= 0) {
+      if (d < 330 && d > 40 && e.shootTimer <= 0 && hasLineOfSight(game, e.x, e.y, p.x, p.y)) {
         e.shootTimer = 0.9 + Math.random() * 0.5;
         const spread = (Math.random() - 0.5) * 0.35;
         shoot(game, e.x, e.y, e.angle + spread, { fromPlayer: false });
@@ -162,11 +177,13 @@ export function updateEnemies(game, dt) {
     } else {
       // Harbor King: holds ground, shoots when the player is near.
       e.shootTimer -= dt;
-      if (d < 380 && e.shootTimer <= 0) {
+      if (d < 380 && e.shootTimer <= 0 && hasLineOfSight(game, e.x, e.y, p.x, p.y)) {
         e.shootTimer = 1.0 + Math.random() * 0.6;
         const spread = (Math.random() - 0.5) * 0.3;
         shoot(game, e.x, e.y, e.angle + spread, { fromPlayer: false });
-        if (Math.random() < 0.3) game.damagePlayer(10, 'bullet');
+        // Kings are the M4 pier fight (2 at a time): kept weaker than cops
+        // so the shootout is winnable without perfect play.
+        if (Math.random() < 0.2) game.damagePlayer(8, 'bullet');
       } else if (d > 420) {
         e.x += Math.cos(e.angle) * e.speed * 0.5 * dt;
         e.y += Math.sin(e.angle) * e.speed * 0.5 * dt;

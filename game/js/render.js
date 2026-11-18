@@ -187,6 +187,24 @@ export function drawWorld(game, ctx, cam, vw, vh) {
     ctx.fill();
     ctx.restore();
   }
+  // Hidden cash stashes: a faint green glint for the sharp-eyed.
+  if (game.missions && game.missions.stashes) {
+    for (const s of game.missions.stashes) {
+      if (s.taken) continue;
+      const glint = 0.55 + Math.sin(game.time * 3 + s.x) * 0.25;
+      ctx.save();
+      ctx.globalAlpha = glint;
+      ctx.fillStyle = '#7dd87d';
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y - 10);
+      ctx.lineTo(s.x + 7, s.y);
+      ctx.lineTo(s.x, s.y + 10);
+      ctx.lineTo(s.x - 7, s.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  }
   // Entities
   drawEffects(game.fx, ctx);
   for (const car of game.cars) drawCar(ctx, car, game.time);

@@ -154,7 +154,7 @@ function startNewGame() {
   const seedParam = parseInt(params.get('seed') || '', 10);
   const seed = Number.isFinite(seedParam) ? seedParam : Math.floor(Math.random() * 100000) + 1;
   resetWorld(seed);
-  game.missions.start('free-roam');
+  game.missions.start('first-wheels');
   game.state = 'playing';
   hideOverlays();
   hud.showHud(true);
@@ -444,7 +444,7 @@ document.getElementById('btn-howto').addEventListener('click', () => {
 // NEW GAME / CONTINUE, so play-tests never read a stale snapshot.
 window.__solmar = {
   get game() { return game; },
-  version: 'retry5-b1',
+  version: 'retry5-b2',
   teleport(x, y) {
     game.player.x = x; game.player.y = y;
     game.cam.x = x; game.cam.y = y;
